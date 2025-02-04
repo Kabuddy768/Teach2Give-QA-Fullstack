@@ -1,0 +1,91 @@
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #adc4f9;
+    font-family: Arial, sans-serif;
+}
+
+.card {
+    background: rgb(189, 211, 231);
+    padding: 2rem;
+    border-radius: 24px;
+    /* box-shadow: 0 10px 20px rgba(10, 9, 9, 0.05); */
+    box-shadow: 
+        15px -15px 25px rgba(0, 0, 0, 0.1),  /* top-right white shadow */
+        -15px 15px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 230px;
+    width: 100%;
+    padding-top: 80px;
+    position: relative;
+}
+
+.google-logo img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 2rem;
+}
+
+.profile-info h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #202124;
+    font-weight: 500;
+}
+
+.designation {
+    color: #5F6368;
+    margin: 8px 0 20px;
+    font-size: 16px;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.social-links a {
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+.social-links a img{
+    width: 20px;
+
+}
+.social-links a:hover {
+    transform: scale(1.1);
+}
+
+.search-button {
+    background: white;
+    color: #202124;
+    border: 1px solid #dadce0;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    
+    bottom: 1%;
+}
+
+.search-button:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.btn{
+    padding:30px ;
+}
