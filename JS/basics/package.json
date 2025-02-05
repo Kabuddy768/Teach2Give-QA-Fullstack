@@ -1,0 +1,18 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "Learning Js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node basics.js",
+    "dev:start": "nodemon basics.js",
+    "dev:add": "nodemon addition.js"
+  },
+  "author": "Ben Mwangi",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "type": "module"
+}
