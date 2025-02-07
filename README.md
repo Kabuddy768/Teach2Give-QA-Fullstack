@@ -5,3 +5,5 @@
 ![googlecard](Html-Css/Assets/Preview2.png)
 # assignment 2.2
 ![remotework](Html-Css/Assets/Preview3.png)
+# assignment 3
+![commerce](Html-Css/Assets/Preview4.png)
