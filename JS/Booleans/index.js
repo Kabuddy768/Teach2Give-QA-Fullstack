@@ -12,3 +12,6 @@ function showPaymentsModule(args){
 console.log(showPaymentsModule(isAdmin)); // You have access to the payments module
 console.log(showPaymentsModule(isStudent)); // You do not have access to the payments module
 console.log(5==='5');
+
+
+
