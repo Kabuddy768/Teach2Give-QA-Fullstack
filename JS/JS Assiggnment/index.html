@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .product-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            width: 250px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
+        .product-card h2 {
+            font-size: 18px;
+        }
+        .product-card p {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product List</h1>
+    <div class="product-container" id="product-list">
+        <!-- Products will be inserted here -->
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("http://localhost:3000/products")  // Fetch data from JSON Server
+                .then(response => response.json())
+                .then(products => {
+                    const productList = document.getElementById("product-list");
+                    
+                    products.forEach(product => {
+                        const productCard = document.createElement("div");
+                        productCard.classList.add("product-card");
+
+                        productCard.innerHTML = `
+                            <h2>${product.name}</h2>
+                            <p><strong>Category:</strong> ${product.category}</p>
+                            <p>${product.description}</p>
+                            <p><strong>Price:</strong> $${product.price.toFixed(2)}</p>
+                            <p><strong>Stock:</strong> ${product.stock}</p>
+                        `;
+
+                        productList.appendChild(productCard);
+                    });
+                })
+                .catch(error => console.error("Error fetching products:", error));
+        });
+    </script>
+</body>
+</html>
