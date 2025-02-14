@@ -7,3 +7,7 @@
 ![remotework](Html-Css/Assets/Preview3.png)
 # assignment 3
 ![commerce](Html-Css/Assets/Preview4.png)
+# calculator
+![calculator](Html-Css/Assets/Icons/Preview6.png)
+# jsondisplay
+![jsondislpay](Html-Css/Assets/Icons/Preview5.png)

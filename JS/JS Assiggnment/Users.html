@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Data</title>
+</head>
+<body>
+
+    <h1>Users Data</h1>
+
+    <button onclick="filterActiveUsers()">Show Active Users (Past Week)</button>
+    <button onclick="getPopularPosts(5)">Show Top 5 Popular Posts</button>
+    <button onclick="calculateAverageLikes()">Calculate Average Likes Per User</button>
+
+    <div id="output"></div>
+
+    <script>
+        // Fetch the JSON file
+        async function fetchUsers() {
+            const response = await fetch('database.json'); // Ensure users.json is in the same directory
+            const users = await response.json();
+            return users;
+        }
+
+        // Function to filter active users (who posted in the past week)
+        async function filterActiveUsers() {
+            const users = await fetchUsers();
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+            const activeUsers = users.filter(user => 
+                user.posts.some(post => new Date(post.timestamp) >= oneWeekAgo)
+            );
+
+            displayResults(activeUsers, "Active Users (Past Week)");
+        }
+
+        // Function to get top N popular posts
+        async function getPopularPosts(n) {
+            const users = await fetchUsers();
+            const allPosts = users.flatMap(user => user.posts);
+
+            // Sort by likes in descending order
+            const popularPosts = allPosts.sort((a, b) => b.likes - a.likes).slice(0, n);
+
+            displayResults(popularPosts, `Top ${n} Popular Posts`);
+        }
+
+        // Function to calculate average likes per user
+        async function calculateAverageLikes() {
+            const users = await fetchUsers();
+
+            const averages = users.map(user => {
+                const totalLikes = user.posts.reduce((sum, post) => sum + post.likes, 0);
+                const postCount = user.posts.length;
+                return {
+                    name: user.name,
+                    avgLikes: postCount > 0 ? (totalLikes / postCount).toFixed(2) : 0
+                };
+            });
+
+            displayResults(averages, "Average Likes Per User");
+        }
+
+        // Function to display results
+        function displayResults(data, title) {
+            const output = document.getElementById('output');
+            output.innerHTML = `<h2>${title}</h2><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+    </script>
+
+</body>
+</html>
