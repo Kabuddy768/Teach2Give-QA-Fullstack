@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Library</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Book Library</h1>
+        <p>Discover and explore your favorite books</p>
+    </header>
+    
+    <nav>
+        <div class="nav-container">
+            <div class="sort-options">
+                <button class="sort-btn" id="sort-genre">Sort by Genre</button>
+                <button class="sort-btn" id="sort-year">Sort by Year</button>
+                <button class="sort-btn" id="sort-pages">Sort by Pages</button>
+            </div>
+        </div>
+    </nav>
+    
+    <section class="search-container">
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search for a book by title...">
+            <button id="search-btn">Search</button>
+        </div>
+    </section>
+    
+    <section class="instructions">
+        <h3>How to Use:</h3>
+        <p>- Click on the sort buttons to organize books by genre, year, or number of pages</p>
+        <p>- Use the search bar to find books by title (case insensitive)</p>
+        <p>- Click on any book card to see more details</p>
+    </section>
+    
+    <main class="books-container">
+        <div id="loading-message" class="loading">Loading books...</div>
+        <div id="error-message" class="error-message" style="display: none;">Error loading books. Please try again later.</div>
+        <div id="books-grid" class="books-grid"></div>
+    </main>
+    
+    <script>
+        // Book data storage
+        let allBooks = [];
+        
+        // DOM Elements
+        const booksGrid = document.getElementById('books-grid');
+        const loadingMessage = document.getElementById('loading-message');
+        const errorMessage = document.getElementById('error-message');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const sortGenreBtn = document.getElementById('sort-genre');
+        const sortYearBtn = document.getElementById('sort-year');
+        const sortPagesBtn = document.getElementById('sort-pages');
+
+        let expandedCard = null;
+
+        
+        // Fetch books from server
+        async function fetchBooks() {
+            try {
+                loadingMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                booksGrid.innerHTML = '';
+                
+                const response = await fetch('http://localhost:3000/books');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch books');
+                }
+                
+                allBooks = await response.json();
+                displayBooks(allBooks);
+                
+            } catch (error) {
+                console.error('Error fetching books:', error);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = `Error: ${error.message}`;
+            } finally {
+                loadingMessage.style.display = 'none';
+            }
+        }
+        
+        // Display books in the grid
+function displayBooks(books) {
+    booksGrid.innerHTML = '';
+    
+    if (books.length === 0) {
+        booksGrid.innerHTML = '<p class="no-results">No books found matching your criteria.</p>';
+        return;
+    }
+    
+    books.forEach(book => {
+        const bookCard = document.createElement('div');
+        bookCard.className = 'book-card';
+        
+        bookCard.innerHTML = `
+            <div class="book-img" style="background-image: url('${book.image}'); background-size: cover; background-position: center; height: 220px;"></div>
+            <div class="book-info">
+                <h3 class="book-title">${book.title}</h3>
+                <p class="book-author">by ${book.author}</p>
+                <div class="book-details">
+                    <span class="book-genre">${book.genre}</span>
+                    <span class="book-year">${book.year}</span>
+                    <span class="book-pages">${book.pages} pages</span>
+                </div>
+                <div class="book-description" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                    <p>${book.description}</p>
+                    <p class="publisher"><small>Publisher: ${book.publisher}</small></p>
+                </div>
+            </div>
+        `;
+        
+        // Add click event with active listening behavior
+        bookCard.addEventListener('click', function() {
+            const description = this.querySelector('.book-description');
+            
+            // If this card is already expanded, collapse it
+            if (description.style.display === 'block') {
+                description.style.display = 'none';
+                expandedCard = null;
+                return;
+            }
+            
+            // If another card is expanded, collapse it first
+            if (expandedCard) {
+                const otherDescription = expandedCard.querySelector('.book-description');
+                otherDescription.style.display = 'none';
+            }
+            
+            // Expand this card
+            description.style.display = 'block';
+            expandedCard = this;
+        });
+        
+        booksGrid.appendChild(bookCard);
+    });
+}
+        
+        // Sort Functions
+        function sortByGenre() {
+            const sortedBooks = [...allBooks].sort((a, b) => a.genre.localeCompare(b.genre));
+            displayBooks(sortedBooks);
+        }
+        
+        function sortByYear() {
+            const sortedBooks = [...allBooks].sort((a, b) => a.year - b.year);
+            displayBooks(sortedBooks);
+        }
+        
+        function sortByPages() {
+            const sortedBooks = [...allBooks].sort((a, b) => a.pages - b.pages);
+            displayBooks(sortedBooks);
+        }
+        
+        // Search function
+        function searchBooks() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                displayBooks(allBooks);
+                return;
+            }
+            
+            const filteredBooks = allBooks.filter(book => 
+                book.title.toLowerCase().includes(searchTerm)
+            );
+            
+            displayBooks(filteredBooks);
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', fetchBooks);
+        
+        sortGenreBtn.addEventListener('click', sortByGenre);
+        sortYearBtn.addEventListener('click', sortByYear);
+        sortPagesBtn.addEventListener('click', sortByPages);
+        
+        searchBtn.addEventListener('click', searchBooks);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchBooks();
+            }
+        });
+    </script>
+</body>
+</html>
