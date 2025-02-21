@@ -18,7 +18,12 @@
                 <button class="sort-btn" id="sort-genre">Sort by Genre</button>
                 <button class="sort-btn" id="sort-year">Sort by Year</button>
                 <button class="sort-btn" id="sort-pages">Sort by Pages</button>
+                <!-- <div class="cart">
+                    <button class="cartimage"><img src="icons/shopping-cart.png" alt="">Cart</button>
+                </div> -->
+                
             </div>
+            
         </div>
     </nav>
     
@@ -105,6 +110,8 @@ function displayBooks(books) {
                     <span class="book-genre">${book.genre}</span>
                     <span class="book-year">${book.year}</span>
                     <span class="book-pages">${book.pages} pages</span>
+                    <span class="book-pages">Price: ${book.price}$ </span>
+                    
                 </div>
                 <div class="book-description" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
                     <p>${book.description}</p>
