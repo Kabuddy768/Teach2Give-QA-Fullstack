@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Library</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Inline styles for the cart panel */
+    .cart-panel {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 320px;
+      height: 100%;
+      background: linear-gradient(135deg, #ffffff, #f1f1f1);
+      background-color: #f9f9f9;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+      padding: 25px;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+      z-index: 1000;
+      border-left: 5px solid #007bff; /* Accent border for visual interest */
+      font-family: 'Helvetica Neue', sans-serif;
+      color: #333;
+    }
+    .cart-panel.open {
+      right: 0;
+    }
+    .cart-panel h2 {
+      margin-top: 0;
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.6em;
+      color: #007bff;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+    }
+    .cart-item-controls button {
+      margin: 0 3px;
+      padding: 3px 6px;
+    }
+    .cart-item span {
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+    .cart-item-controls button {
+  margin: 0 3px;
+  padding: 4px 8px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.cart-total {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: right;
+}
+
+#close-cart {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#close-cart:hover {
+  background-color: #c82333;
+}
+    /* Optional: Style for the toggle cart button */
+    #toggle-cart {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    /* Buy button styling */
+    .buy-btn {
+      margin-top: 10px;
+      padding: 6px 10px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Book Library</h1>
+    <p>Discover and explore your favorite books</p>
+    <!-- Cart toggle button in header -->
+    
+  </header>
+
+  <nav>
+    <div class="nav-container">
+      <div class="sort-options">
+        <button class="sort-btn" id="sort-genre">Sort by Genre</button>
+        <button class="sort-btn" id="sort-year">Sort by Year</button>
+        <button class="sort-btn" id="sort-pages">Sort by Pages</button>
+
+      </div>
+      <button id="toggle-cart">Cart</button>
+    </div>
+  </nav>
+
+  <section class="search-container">
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Search for a book by title..." />
+      <button id="search-btn">Search</button>
+    </div>
+  </section>
+
+  <section class="instructions">
+    <h3>How to Use:</h3>
+    <p>- Click on the sort buttons to organize books by genre, year, or number of pages</p>
+    <p>- Use the search bar to find books by title (case insensitive)</p>
+    <p>- Click on any book card to see more details</p>
+    <p>- Click the <strong>Buy</strong> button to add a book to your cart</p>
+  </section>
+
+  <main class="books-container">
+    <div id="loading-message" class="loading">Loading books...</div>
+    <div id="error-message" class="error-message" style="display: none;">Error loading books. Please try again later.</div>
+    <div id="books-grid" class="books-grid"></div>
+  </main>
+
+  <!-- Cart Panel -->
+  <div id="cart" class="cart-panel">
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <div class="cart-total">Total: $<span id="cart-total">0.00</span></div>
+    <button id="close-cart">Close</button>
+  </div>
+
+</body>
+</html>
