@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "dev:start": "nodemon --exec npx ts-node src/index.ts",
     "start": "node dist/3typeAlliases.ts",
-    "build": "vitest",
-    
+    "build": "tsc",
+    "serve":"vite",
     "dev": "tsc -watch"
   },
   "keywords": [],
@@ -28,5 +28,6 @@
     "vite-tsconfig-paths": "^5.1.4",
     "ts-node-dev": "^10.9.2"
   },
+  "type": "module",
   "description": ""
 }
