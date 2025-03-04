@@ -1,0 +1,5 @@
+port==3000
+npm install expree
+pnpm install -D typescript @types/express ts-node @types/node nodemon
+
+-D dev dependancies
