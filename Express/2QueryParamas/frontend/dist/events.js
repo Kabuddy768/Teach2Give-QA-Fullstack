@@ -7,22 +7,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-//file to fetch events 
-export const fetchEvents = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* (queryParams = "") {
+// Function to fetch books with optional query parameters
+export const fetchBooks = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* (queryParams = "") {
     try {
-        const response = yield fetch(`http://localhost:3000/api/eventsFilter${queryParams}`, {
+        const response = yield fetch(`http://localhost:3000/api/books${queryParams}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
             }
         });
         if (!response.ok) {
-            throw new Error("Failed to fetch events");
+            throw new Error("Failed to fetch books");
         }
-        return yield response.json(); // Return the events data
+        return yield response.json(); // Return the books data
     }
     catch (error) {
-        console.error("Error fetching events:", error);
+        console.error("Error fetching books:", error);
         return []; // Return empty array if fetch fails
     }
 });

@@ -1,99 +1,86 @@
-import express, {Request, Response, NextFunction} from "express"
-import dotenv from 'dotenv'
-import { readFileSync } from "fs"
-import path from 'path'
-import cors from "cors"
+import express, { Request, Response } from "express";
+import dotenv from "dotenv";
+import { readFileSync } from "fs";
+import path from "path";
+import cors from "cors";
 
-//configure the dotenv 
-//top most level
-dotenv.config()
+// Configure dotenv
+dotenv.config();
 
-//instance of express
-//the second most top level
-const app = express()
+// Initialize express app
+const app = express();
 
-//load the variables
-const port = process.env.PORT 
-const secret = process.env.SECRET
-console.log(port) //3000
-console.log(secret) //a_very_strong_secret_for_you
+// Load environment variables
+const port = process.env.PORT || 3000;
 
+// Enable CORS
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    methods: ["GET"],
+    allowedHeaders: ["Content-Type"]
+  })
+);
 
-//eneable CORS for all origins  
-//app.use(cors())
+// Middleware to parse JSON
+app.use(express.json());
 
-//enable cors with optiosn (RECOMMENDED)
-//To allow only http://localhost:5173:
-app.use(cors({
-    origin: "http://localhost:5173",
-    methods: "GET, PUT,DELETE",
-    credentials: true //allows cookies and auth headers
-}))
+// Read book data from JSON file
+let booksData;
+try {
+  const filePath = path.join(__dirname, "db", "books.json");
+  console.log("Reading books from:", filePath);
+  const jsonContent = JSON.parse(readFileSync(filePath, "utf-8"));
+  booksData = jsonContent.books; // Access the books array
+} catch (error) {
+  console.error("Error reading books.json:", error);
+  booksData = []; // Fallback to empty array
+}
 
-//get the current  directory 
-const _dirname = path.resolve()
+// API endpoint to fetch books with filtering and sorting
+app.get("/api/books", (req: Request, res: Response) => {
+  try {
+    let { genre, year, pages, sort } = req.query;
 
-//synchronously read the file
-const eventData = readFileSync(
-    path.join(_dirname, "src", "db", "eventsData.json"), "utf-8"
-)
+    let filteredBooks = [...booksData];
 
-//console.log(eventData)
-
-
-// Sample Event Data
-const events = [
-    { id: 1, title: "Summer Music Festival", price: 50, location: "New York", company: "Music Festivals Inc." },
-    { id: 2, title: "Food and Wine Expo", price: 75, location: "San Francisco", company: "Food and Wine Events LLC" },
-    { id: 3, title: "Comic Con", price: 35, location: "Los Angeles", company: "Comic Con International" },
-    { id: 4, title: "Art and Design Fair", price: 20, location: "Chicago", company: "Art and Design Expo LLC" },
-    { id: 5, title: "Holiday Market", price: 5, location: "New York", company: "Holiday Markets Inc." }
-  ];
-  
-
-//a simple get request saying hello world  
-app.get('/', (req, res) => {
-    res.send(`Hello World, Be humble to us`)
-})
-
-app.get('/api/eventsData', (req, res) => {
-    //res.send(eventData)
-})
-
-
-//Now, let's create a GET API route that filters events based on query parameters
-app.get('/api/eventsFilter', (req:Request, res:Response) => {
-    try {
-        const {title, location, company, price} = req.query
-
-        //on the first filters, the whole evets havent been filtered
-        let filteredEvents = [...events]
-
-        //filtering logic
-        if(title) {
-            filteredEvents = filteredEvents.filter((event) => event.title.toLowerCase().includes((title as string).toLowerCase()))
-        }
-        if(location) {
-            filteredEvents = filteredEvents.filter((event) => event.location.toLowerCase().includes((location as string).toLowerCase()))
-        }
-        if(company) {
-            filteredEvents = filteredEvents.filter((event) => event.company.toLowerCase().includes((company as string).toLowerCase()))
-        }
-        if(price) {
-            const priceNum = parseFloat(price as string)
-            filteredEvents = filteredEvents.filter((event) => event.price === priceNum)
-        }
-
-
-        res.send(filteredEvents)
-    } catch (error) {
-        
+    // Apply filters dynamically
+    if (genre) {
+      filteredBooks = filteredBooks.filter((book) =>
+        book.genre.toLowerCase().includes(String(genre).toLowerCase())
+      );
     }
-})
+    if (year) {
+      const yearNum = Number(year);
+      filteredBooks = filteredBooks.filter((book) => book.year === yearNum);
+    }
+    if (pages) {
+      const pagesNum = Number(pages);
+      filteredBooks = filteredBooks.filter((book) => book.pages === pagesNum);
+    }
 
-// create server 
+    // Apply sorting
+    if (sort === "year_asc") {
+      filteredBooks.sort((a, b) => a.year - b.year);
+    } else if (sort === "year_desc") {
+      filteredBooks.sort((a, b) => b.year - a.year);
+    } else if (sort === "pages_asc") {
+      filteredBooks.sort((a, b) => a.pages - b.pages);
+    } else if (sort === "pages_desc") {
+      filteredBooks.sort((a, b) => b.pages - a.pages);
+    }
+
+    res.json(filteredBooks);
+  } catch (error) {
+    console.error("Error in book filtering:", error);
+    res.status(500).json({ 
+      error: "Internal server error", 
+      details: error instanceof Error ? error.message : 'Unknown error' 
+    });
+  }
+});
+
+// Start server
 app.listen(port, () => {
-    console.log(`Server is running on port: ${port}`)
-})
-
-//SOC - separtion of concersn 
+  console.log(`Server is running on port: ${port}`);
+});

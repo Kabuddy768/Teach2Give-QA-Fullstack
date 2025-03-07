@@ -1,6 +1,13 @@
-//file to fetch events 
-export const fetchEvents = async (queryParams: string = "") => {
+// front-end/src/events.ts
+export const fetchBooks = async (queryParams: string = "") => {
   try {
+    // Ensure queryParams starts with "?" if not empty
+    const url = queryParams.startsWith('?') 
+      ? `http://localhost:3000/api/books${queryParams}` 
+      : `http://localhost:3000/api/books`;
+
+    console.log("Fetching from URL:", url); // Add logging for debugging
+
     const response = await fetch(`http://localhost:3000/api/books${queryParams}`, {
       method: "GET",
       headers: {
@@ -8,13 +15,19 @@ export const fetchEvents = async (queryParams: string = "") => {
       }
     });
 
+    console.log("Response status:", response.status); // Add logging
+
     if (!response.ok) {
-      throw new Error("Failed to fetch events");
+      const errorText = await response.text();
+      console.error("Error response:", errorText);
+      throw new Error("Failed to fetch books");
     }
 
-    return await response.json(); // Return the events data
+    const books = await response.json();
+    console.log("Fetched books:", books); // Add logging
+    return books;
   } catch (error) {
-    console.error("Error fetching events:", error);
+    console.error("Error fetching books:", error);
     return []; // Return empty array if fetch fails
   }
 };
